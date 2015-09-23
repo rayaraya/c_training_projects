@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-double solutions(double a, double b, double c)
+void solutions(double a, double b, double c)
 {
     double x1, x2, x, d;
 
