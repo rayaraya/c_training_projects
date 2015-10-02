@@ -12,23 +12,17 @@ int main ()
 
     printf ("Please input the number of elements in the array for sort: ");
 
-    if (scanf("%d", &N) != 1)
+    if ((scanf("%d", &N) != 1)|| N <= 0)
     {
         printf("Unfortunately, wrong input.");
         return 0;
     }
 
 
-    int* pNum = (int*) calloc (N + 1, sizeof (*pNum));
-
-    printf ("Please input array elements: ");
+    int* pNum = (int*) calloc (N, sizeof (*pNum));
 
     Input (pNum, N);
-    if (pNum[N] == 1)
-    {
-        printf("Unfortunately, wrong input.");
-        return 0;
-    }
+    if (*pNum == 0) return 0;
     Qsort (pNum, 0, N-1);
     Output (pNum, N);
 
@@ -42,12 +36,18 @@ int* Input (int* pNum, const int nLen)
 {
     int i, end = 0;
 
+    printf ("Please input array elements: ");
+
     for (i = 0; i < nLen; i++)
     {
         if ((scanf ("%d", &pNum[i])) != 1)  end = 1;
     }
 
-    if (end == 1) pNum[nLen] = 1;
+    if (end == 1)
+    {
+        printf("Unfortunately, wrong input.");
+        return 0;
+    }
 
     return pNum;
 }
