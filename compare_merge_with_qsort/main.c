@@ -5,6 +5,8 @@
 #include <string.h>
 #include <time.h>
 
+#define QU 1000000
+
 void Mergesort (int* pNum, const int nLen);
 void Qsort (int* pNum, int Start, int Stop);
 void Swap(int* a, int* b);
@@ -55,7 +57,7 @@ int main ()
     free (pNum);
     pNum = NULL;
 
-    free (pNum);
+    free (pNum1);
     pNum1 = NULL;
 
     return 0;
@@ -183,9 +185,9 @@ void Create_file_with_rand_numb ()
 
     srand (nSV);
 
-    fprintf(file, "10000000 ");
+    fprintf(file, "%d", QU);
 
-    for (i = 0; i < 10000000; i++)
+    for (i = 0; i < QU; i++)
     {
         fprintf(file, "%d ", rand() % 100);
     }
