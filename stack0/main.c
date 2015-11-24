@@ -1,126 +1,23 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-#define START_SIZE 20
-
-typedef char Data;
-
-struct Stack {
-    int n;
-    int size;
-    Data * a;
-};
-
-struct Stack * stack_create()
-{
-    struct Stack *s = NULL;
-
-    s = calloc(1, sizeof(struct Stack));
-
-    s -> size = START_SIZE;
-    s -> n = 0;
-
-    s -> a = calloc (START_SIZE, sizeof(Data));
-
-    return s;
-}
-
-void push(struct Stack * s, Data x)
-{
-    if (s -> size == s -> n)
-    {
-        s -> size = s -> size * 2;
-        s -> a = realloc(s -> a, (s -> size) * sizeof(Data));
-    }
-
-    s -> a[s -> n] = x;
-
-    s -> n ++;
-}
-
-Data pop(struct Stack * s)
-{
-    Data h;
-    h = s -> a[(s -> n) - 1];
-    s -> n--;
-    return h;
-}
-
-Data get(struct Stack * s)
-{
-    return s -> a[(s -> n) - 1];
-}
-
-void add (struct Stack *s)
-{
-    push(s, pop(s) + pop(s));
-}
-
-void sub (struct Stack *s)
-{
-    push(s, - pop (s) + pop (s));
-}
-
-
-void mul (struct Stack *s)
-{
-    push(s, pop(s) * pop(s));
-}
-
-void _div (struct Stack *s)
-{
-    Data a, b;
-    a = pop(s);
-    b = pop(s);
-
-    if (b == 0)
-        printf("Incorrect data");
-    else
-        push(s, a / b);
-}
-
-
-int stack_is_empty(struct Stack * s)
-{
-    if (s -> n == 0) return 1;
-
-    return 0;
-}
-
-void stack_print(struct Stack * s)
-{
-    int i;
-
-    if ((s -> n) == 0 )
-        printf("Empty stack");
-    else
-        for ( i = 0; i < (s -> n); i++ )
-        {
-            printf("%d ", s -> a[i]);
-        }
-    printf("\n");
-}
-
-
-int stack_size(struct Stack * s)
-{
-    return s -> n;
-}
-
-
-void clear(struct Stack * s)
-{
-     s -> n = 0;
-}
-
-void end(struct Stack * s)
-{
-    free(s -> a);
-    free(s);
-    s = NULL;
-}
+#include "stack0.h"
 
 int main()
 {
+    struct Stack * prob = stack_create();
+    Data a;
+    push (prob, 2);
+    push (prob, 3);
+    push (prob, -10);
+    push (prob, 6);
+    dump (prob);
+    add (prob);
+    dump (prob);
+    mul (prob);
+    dump (prob);
+    _div (prob);
+    dump (prob);
+    a = pop (prob);
+    dump (prob);
+
+    printf("last value = %d", a);
     return 0;
 }
