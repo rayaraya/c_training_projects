@@ -1,0 +1,16 @@
+push 30
+push 20
+push 40
+push 50
+push 70
+push 60
+print
+sub
+print
+mul
+print
+div
+print
+add
+print
+
