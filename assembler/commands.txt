@@ -4,7 +4,21 @@ push 40
 push 50
 push 70
 push 60
+mov ax 20
+mov bx 30
+mov cx 8
+add ax bx cx
+print ax
+sub ax bx cx
+print ax
+mul ax bx cx
+print ax
+div ax bx cx
+print ax
+push ax
 print
+pop ax
+print ax
 sub
 print
 mul

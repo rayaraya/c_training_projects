@@ -13,3 +13,17 @@ enum cmds_stack
     irreg_com = 90,
     c_end = 99
 };
+
+enum cmds_regs
+{
+    c_mov_ax = 20,
+    c_mov_bx = 21,
+    c_mov_cx = 22,
+    c_add_ax_bx_cx = 23,
+    c_sub_ax_bx_cx = 24,
+    c_mul_ax_bx_cx = 25,
+    c_div_ax_bx_cx = 26,
+    c_push_ax = 27,
+    c_pop_ax = 28,
+    c_print_ax = 29
+};

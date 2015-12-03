@@ -23,10 +23,31 @@ int main()
                     if(c == 's' && k1 == 'h')
                     {
                         fscanf(f0, "%c", &c);
-                        fscanf(f0, "%d", &d);
-                        com = c_push;
-                        fscanf(f0, "%c", &c);
-                        fl = 1;
+                        fscanf(f0, "%c", &k1);
+                        switch (k1)
+                        {
+                            case 'a':
+                                fscanf(f0, "%c", &c);
+                                if (c == 'x')
+                                {
+                                    com = c_push_ax;
+                                    fscanf(f0, "%c", &c);
+                                    fl = 1;
+                                }
+                                break;
+                            case '1': case '2': case '3': case '4': case '5':
+                            case '6': case '7': case '8': case '9': case '0':
+                                d = k1 - '0';
+                                fscanf(f0, "%c", &k1);
+                                while (k1 != '\n')
+                                {
+                                    d = d * 10 + (k1 - '0');
+                                    fscanf(f0, "%c", &k1);
+                                }
+                                com = c_push;
+                                fl = 1;
+                                break;
+                        }
                     }
                 }
 
@@ -35,9 +56,23 @@ int main()
                     fscanf(f0, "%c", &c);
                     if (c == 'p')
                     {
-                        com = c_pop;
                         fscanf(f0, "%c", &c);
-                        fl = 1;
+                        if (c == '\n')
+                        {
+                            com = c_pop;
+                            fl = 1;
+                        }
+                        if (c == ' ')
+                        {
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &k1);
+                            if (c == 'a' && k1 == 'x')
+                            {
+                                com = c_pop_ax;
+                                fscanf(f0, "%c", &c);
+                                fl = 1;
+                            }
+                        }
                     }
                 }
 
@@ -48,9 +83,23 @@ int main()
                     fscanf(f0, "%c", &k2);
                     if ( c == 'i' && k1 == 'n' && k2 == 't')
                     {
-                        com = c_print;
                         fscanf(f0, "%c", &c);
-                        fl = 1;
+                        if (c == '\n')
+                        {
+                            com = c_print;
+                            fl = 1;
+                        }
+                        if (c == ' ')
+                        {
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &k1);
+                            if (c == 'a' && k1 == 'x')
+                            {
+                                com = c_print_ax;
+                                fscanf(f0, "%c", &c);
+                                fl = 1;
+                            }
+                        }
                     }
                 }
         }
@@ -61,9 +110,35 @@ int main()
             fscanf(f0, "%c", &k1);
             if (c == 'd' && k1 =='d')
             {
-                com = c_add;
                 fscanf(f0, "%c", &c);
-                fl = 1;
+                if (c == '\n')
+                {
+                    com = c_add;
+                    fl = 1;
+                }
+                if (c == ' ')
+                {
+                    fscanf(f0, "%c", &c);
+                    fscanf(f0, "%c", &k1);
+                    if (c == 'a' && k1 == 'x')
+                    {
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%c", &k1);
+                        if (c == 'b' && k1 == 'x')
+                        {
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &k1);
+                            if (c == 'c' && k1 == 'x')
+                            {
+                                com = c_add_ax_bx_cx;
+                                fl = 1;
+                                fscanf(f0, "%c", &c);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -73,9 +148,35 @@ int main()
             fscanf(f0, "%c", &k1);
             if (c == 'u' && k1 == 'b')
             {
-                com = c_sub;
                 fscanf(f0, "%c", &c);
-                fl = 1;
+                if (c == '\n')
+                {
+                    com = c_sub;
+                    fl = 1;
+                }
+                if (c == ' ')
+                {
+                    fscanf(f0, "%c", &c);
+                    fscanf(f0, "%c", &k1);
+                    if (c == 'a' && k1 == 'x')
+                    {
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%c", &k1);
+                        if (c == 'b' && k1 == 'x')
+                        {
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &k1);
+                            if (c == 'c' && k1 == 'x')
+                            {
+                                com = c_sub_ax_bx_cx;
+                                fl = 1;
+                                fscanf(f0, "%c", &c);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -85,9 +186,78 @@ int main()
             fscanf(f0, "%c", &k1);
             if (c == 'u' && k1 == 'l')
             {
-                com = c_mul;
                 fscanf(f0, "%c", &c);
-                fl = 1;
+                if (c == '\n')
+                {
+                    com = c_mul;
+                    fl = 1;
+                }
+                if (c == ' ')
+                {
+                    fscanf(f0, "%c", &c);
+                    fscanf(f0, "%c", &k1);
+                    if (c == 'a' && k1 == 'x')
+                    {
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%c", &k1);
+                        if (c == 'b' && k1 == 'x')
+                        {
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &k1);
+                            if (c == 'c' && k1 == 'x')
+                            {
+                                com = c_mul_ax_bx_cx;
+                                fl = 1;
+                                fscanf(f0, "%c", &c);
+                            }
+                        }
+                    }
+                }
+
+            }
+            if (c == 'o' && k1 == 'v')
+            {
+                fscanf(f0, "%c", &c);
+                fscanf(f0, "%c", &c);
+                switch (c)
+                {
+                case 'a':
+                    fscanf(f0, "%c", &c);
+                    if (c == 'x')
+                    {
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%d", &d);
+                        com = c_mov_ax;
+                        fscanf(f0, "%c", &c);
+                        fl = 1;
+                    }
+                    break;
+                 case 'b':
+                    fscanf(f0, "%c", &c);
+                    if (c == 'x')
+                    {
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%d", &d);
+                        com = c_mov_bx;
+                        fscanf(f0, "%c", &c);
+                        fl = 1;
+                    }
+                    break;
+                 case 'c':
+                    fscanf(f0, "%c", &c);
+                    if (c == 'x')
+                    {
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%d", &d);
+                        com = c_mov_cx;
+                        fscanf(f0, "%c", &c);
+                        fl = 1;
+                    }
+                    break;
+                }
+
             }
         }
 
@@ -97,13 +267,40 @@ int main()
             fscanf(f0, "%c", &k1);
             if (c == 'i' && k1 == 'v')
             {
-                com = c_div;
                 fscanf(f0, "%c", &c);
-                fl = 1;
+                if (c == '\n')
+                {
+                    com = c_div;
+                    fl = 1;
+                }
+                if (c == ' ')
+                {
+                    fscanf(f0, "%c", &c);
+                    fscanf(f0, "%c", &k1);
+                    if (c == 'a' && k1 == 'x')
+                    {
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%c", &c);
+                        fscanf(f0, "%c", &k1);
+                        if (c == 'b' && k1 == 'x')
+                        {
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &c);
+                            fscanf(f0, "%c", &k1);
+                            if (c == 'c' && k1 == 'x')
+                            {
+                                com = c_div_ax_bx_cx;
+                                fl = 1;
+                                fscanf(f0, "%c", &c);
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
-        if (com == c_push)
+        if (com == c_push || com == c_mov_ax || com == c_mov_bx || com == c_mov_cx)
         {
             fwrite(&com, sizeof(int), 1, f);
             fwrite(&d, sizeof(int), 1, f);
