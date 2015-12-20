@@ -8,11 +8,9 @@ int main()
     struct Stack * s;
     s = stack_create();
 
-    int com = 0, d = 0;
+    int n_register[26] = { };
 
-    int ax = 0;
-    int bx = 0;
-    int cx = 0;
+    int com = 0, com_1 = 0, d = 0;
 
     fread(&com, sizeof(int), 1, f);
 
@@ -20,36 +18,133 @@ int main()
     {
         switch (com)
         {
-            case c_push:
+        case c_push:
+            fread(&com, sizeof(int), 1, f);
+            if (com == fl_stack)
+            {
                 fread(&d, sizeof(int), 1, f);
                 push(s, d);
-                break;
-            case c_pop: pop(s); break;
-            case c_add: add(s); break;
-            case c_sub: sub(s); break;
-            case c_mul: mul(s); break;
-            case c_div: _div(s); break;
-            case c_print: dump(s); break;
-            case c_mov_ax:
-                fread(&d, sizeof(int), 1, f);
-                ax = d;
-                break;
-            case c_mov_bx:
-                fread(&d, sizeof(int), 1, f);
-                bx = d;
-                break;
-            case c_mov_cx:
-                fread(&d, sizeof(int), 1, f);
-                cx = d;
-                break;
-            case c_add_ax_bx_cx: ax = bx + cx; break;
-            case c_sub_ax_bx_cx: ax = bx - cx; break;
-            case c_mul_ax_bx_cx: ax = bx * cx; break;
-            case c_div_ax_bx_cx: ax = bx / cx; break;
-            case c_push_ax: push(s, ax); break;
-            case c_pop_ax: ax = pop(s); break;
-            case c_print_ax: printf("%d\n", ax); break;
+            }
+            else if (com == fl_reg)
+            {
+                fread(&com, sizeof(int), 1, f);
+                com = com - 'a';
+                push(s, n_register[com]);
+            }
+            break;
+        case c_pop:
+            fread(&com, sizeof(int), 1, f);
+            if (com == fl_stack)
+            {
+                pop(s);
+            }
+            else if (com == fl_reg)
+            {
+                fread(&com, sizeof(int), 1, f);
+                com = com - 'a';
+                n_register[com] = pop(s);
+            }
+            break;
+
+        case c_add:
+            fread(&com, sizeof(int), 1, f);
+            if (com == fl_stack)
+            {
+                add(s);
+            }
+            else if (com == fl_reg)
+            {
+                fread(&com, sizeof(int), 1, f);
+                fread(&com_1, sizeof(int), 1, f);
+                com = com - 'a';
+                com_1 = com_1 - 'a';
+                n_register[com] = n_register[com_1];
+                fread(&com_1, sizeof(int), 1, f);
+                com_1 = com_1 - 'a';
+                n_register[com] += n_register[com_1];
+            }
+            break;
+
+        case c_sub:
+            fread(&com, sizeof(int), 1, f);
+            if (com == fl_stack)
+            {
+                sub(s);
+            }
+            else if (com == fl_reg)
+            {
+                fread(&com, sizeof(int), 1, f);
+                fread(&com_1, sizeof(int), 1, f);
+                com = com - 'a';
+                com_1 = com_1 - 'a';
+                n_register[com] = n_register[com_1];
+                fread(&com_1, sizeof(int), 1, f);
+                com_1 = com_1 - 'a';
+                n_register[com] -= n_register[com_1];
+            }
+            break;
+
+        case c_mul:
+            fread(&com, sizeof(int), 1, f);
+            if (com == fl_stack)
+            {
+                mul(s);
+            }
+            else if (com == fl_reg)
+            {
+                fread(&com, sizeof(int), 1, f);
+                fread(&com_1, sizeof(int), 1, f);
+                com = com - 'a';
+                com_1 = com_1 - 'a';
+                n_register[com] = n_register[com_1];
+                fread(&com_1, sizeof(int), 1, f);
+                com_1 = com_1 - 'a';
+                n_register[com] *= n_register[com_1];
+            }
+            break;
+
+        case c_div:
+            fread(&com, sizeof(int), 1, f);
+            if (com == fl_stack)
+            {
+                _div(s);
+            }
+            else if (com == fl_reg)
+            {
+                fread(&com, sizeof(int), 1, f);
+                fread(&com_1, sizeof(int), 1, f);
+                com = com - 'a';
+                com_1 = com_1 - 'a';
+                n_register[com] = n_register[com_1];
+                fread(&com_1, sizeof(int), 1, f);
+                com_1 = com_1 - 'a';
+                n_register[com] /= n_register[com_1];
+            }
+            break;
+
+        case c_print:
+            fread(&com, sizeof(int), 1, f);
+            if (com == fl_stack)
+            {
+                dump(s);
+            }
+            else if (com == fl_reg)
+            {
+                fread(&com, sizeof(int), 1, f);
+                com = com - 'a';
+                printf("%d\n", n_register[com]);
+            }
+            break;
+
+        case c_mov:
+            fread(&com, sizeof(int), 1, f);
+            fread(&com, sizeof(int), 1, f);
+            fread(&d, sizeof(int), 1, f);
+            com = com - 'a';
+            n_register[com] = d;
+            break;
         }
+        com = 0;
         fread(&com, sizeof(int), 1, f);
     }
     fclose(f);
