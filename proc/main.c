@@ -148,5 +148,7 @@ int main()
         fread(&com, sizeof(int), 1, f);
     }
     fclose(f);
+    stack_clear(s);
+    stack_destroy(s);
     return 0;
 }
