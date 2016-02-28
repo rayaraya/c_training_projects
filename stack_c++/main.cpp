@@ -1,7 +1,8 @@
+// асчленить, переопределить операторы вектора на утро
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
-#include <clocale>
+#include <cassert>
 
 class CStack
 {
@@ -15,7 +16,7 @@ public:
     ~CStack();
     void push(double val);
     double pop();
-    int GetNum();
+    static int GetNum();
     void print();
 };
 
@@ -24,7 +25,6 @@ void command();
 int CStack::number = 0;
 int i_len = 20;
 
-double error_1 = 987654321;
 
 int main()
 {
@@ -47,6 +47,11 @@ int main()
     if (com_1)
     {
         CStack S1;
+        if(S1.GetNum() >= 4)
+        {
+            std::cout << "You create too many stacks." << std::endl;
+            return 0;
+        }
 
         command();
 
@@ -65,14 +70,6 @@ int main()
             if (com_2 == 3)
             {
                 com_1 = S1.pop();
-                if (com_1 == error_1)
-                {
-                    std::cout << "Result : ";
-                    std::cout << "Stack is empty."<< std::endl;
-                }
-                else
-                    std::cout << "Result : ";
-                    std::cout << com_1 << std::endl;
                 command();
             }
 
@@ -101,6 +98,7 @@ CStack::CStack():
     avl_length(i_len)
 {
     data_ = new double [i_len];
+    assert(data_ != NULL);
     number++;
 }
 
@@ -116,6 +114,7 @@ void CStack::push(double val)
         avl_length *= 2;
         data_ = (double*) realloc (data_, avl_length * sizeof(double));
     }
+    assert(data_ != NULL);
 
     data_[size_] = val;
     size_++;
@@ -124,10 +123,15 @@ void CStack::push(double val)
 double CStack::pop()
 {
     double a;
+    std::cout << "Result: ";
     if (size_ == 0)
-    return error_1;
+    {
+        std::cout << "Stack is empty" << std::endl;
+        return 0;
+    }
     a = data_[size_ - 1];
     size_--;
+    std::cout << a << std::endl;
     return a;
 }
 
@@ -154,11 +158,12 @@ void CStack::print()
 
     int i;
     double b;
+
     for (i = size_; i > 0; i--)
     {
-        b = data_[i - 1];
-
-        std::cout << b << std::cout << " ";
+        b = (double) data_[i - 1];
+        std::cout << b;
+        std::cout << " ";
     }
 }
 
