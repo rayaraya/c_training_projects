@@ -1,4 +1,3 @@
-// асчленить, переопределить операторы вектора на утро
 #include <iostream>
 #include <cstring>
 #include <cstdlib>

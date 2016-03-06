@@ -3,7 +3,6 @@
 #include <cassert>
 #include <iostream>
 #include <cmath>
-//асерты и разделить
 
 template <class T> class CVector_t
 {
@@ -36,11 +35,11 @@ public:
     int operator > (CVector_t & v_1);
     int operator < (CVector_t & v_1);
 
-    CVector_t operator -- ();
+    CVector_t operator -- (); //prefix form
     CVector_t operator ++ ();
 
-    CVector_t operator ++ (int notused); //prefix form
-    CVector_t operator -- (int notused); //prefix form
+    CVector_t operator ++ (int notused);
+    CVector_t operator -- (int notused); //postfix form
 
     template <class X> friend std::ostream & operator <<(std::ostream & stream, CVector_t<X> & v);
     template <class X> friend std::istream & operator >>(std::istream & stream, CVector_t<X> & v);
@@ -70,6 +69,7 @@ template <class T> CVector_t<T>::~CVector_t()
 
 template <class T> T& CVector_t<T>::operator[] (int index)
 {
+    assert(index >= 0 && index < size);
     return data[index];
 }
 
@@ -156,6 +156,7 @@ template <class T> CVector_t<T> CVector_t<T>::operator / (int a)
 
 template <class T> T CVector_t<T>::operator | (CVector_t<T> & v_1)
 {
+    assert(size == v_1.size);
     int i;
     T G = 0;
     for(i = 0; i < size; i++)
@@ -167,6 +168,7 @@ template <class T> T CVector_t<T>::operator | (CVector_t<T> & v_1)
 
 template <class T> double CVector_t<T>::operator ^ (CVector_t<T> & v_1)
 {
+    assert(size == v_1.size);
     double COS = 0;
     double a , b;
     int i;
@@ -186,6 +188,7 @@ template <class T> double CVector_t<T>::operator ^ (CVector_t<T> & v_1)
 
 template <class T> int CVector_t<T>::operator > (CVector_t<T> & v_1)
 {
+    assert(size == v_1.size);
     long double a = 0 , b = 0;
 
     int i;
@@ -201,6 +204,7 @@ template <class T> int CVector_t<T>::operator > (CVector_t<T> & v_1)
 
 template <class T> int CVector_t<T>::operator < (CVector_t<T> & v_1)
 {
+    assert(size == v_1.size);
     long double a = 0 , b = 0;
 
     int i;
