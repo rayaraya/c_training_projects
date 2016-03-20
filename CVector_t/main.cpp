@@ -4,30 +4,40 @@
 int main()
 {
     CVector_t<int> a(2), b(2), c(2);
+    int f;
 
-    a[0] = 1;
-    a[1] = 2;
+    try
+    {
+        f = a[5];
 
-    b[0] = 2;
-    b[1] = 99;
+        a[0] = 1;
+        a[1] = 2;
 
-    c = b--;
-    std::cout << c;
-    c = a++;
-    std::cout << c;
+        b[0] = 2;
+        b[1] = 99;
 
-    c[0] = 67;
-    c[1] = 5;
+        c = b--;
+        std::cout << c;
+        c = a++;
+        std::cout << c;
 
-    std::cout << b[0]<< " " << b[1] << " ";
-    std::cout << a[0]<< " " << a[1] << " ";
+        c[0] = 67;
+        c[1] = 5;
 
-    int i = 4;
+        std::cout << b[0]<< " " << b[1] << " ";
+        std::cout << a[0]<< " " << a[1] << " ";
 
-    i = (b < a);
+        int i = 4;
 
-    std::cout <<" "<< i;
-    //std::cout << " " << b[1];
+        i = (b < a);
+
+
+        std::cout <<" "<< i;
+    }
+    catch (MyException &ex)
+    {
+        std::cout<< "There was an error: " << ex.show();
+    }
 
 
     return 0;

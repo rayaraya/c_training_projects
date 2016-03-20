@@ -1,8 +1,29 @@
 #ifndef CVECTOR_T_H
 #define CVECTOR_T_H
-#include <cassert>
+
 #include <iostream>
 #include <cmath>
+#include <cstring>
+#include <cstdlib>
+
+class MyException
+{
+public:
+    char str_what[50];
+
+    MyException()
+    {
+        *str_what = 0;
+    }
+    MyException (char *s)
+    {
+        strcpy(str_what, s);
+    }
+    std::string show()
+    {
+        return str_what;
+    }
+};
 
 template <class T> class CVector_t
 {
@@ -48,15 +69,29 @@ public:
 template <class T> CVector_t<T>::CVector_t(int b_size)
 {
     size = b_size;
-    data = new T[size];
-    assert(data != NULL);
+
+    try
+    {
+        data = new T[size];
+    }
+    catch (...)
+    {
+        throw MyException((char*)"Memory isn't allocated in ctor.\n");
+    }
 }
 
 template <class T> CVector_t<T>::CVector_t(const CVector_t<T>&thus)
 {
     size = thus.size;
-    data = new T[size];
-    assert(data != NULL);
+    try
+    {
+        data = new T[size];
+    }
+    catch(...)
+    {
+        throw MyException((char*)"Memory isn't allocated in copy ctor.\n");
+    }
+
     int i;
     for (i = 0; i < size; i++)
         data[i] = thus.data[i];
@@ -69,8 +104,16 @@ template <class T> CVector_t<T>::~CVector_t()
 
 template <class T> T& CVector_t<T>::operator[] (int index)
 {
-    assert(index >= 0 && index < size);
-    return data[index];
+    try
+    {
+        if (!(index >= 0 && index < size))
+            throw MyException((char*)"Invalid index in operator [ ].\n");
+        return data[index];
+    }
+    catch(MyException &ex)
+    {
+        throw ex;
+    }
 }
 
 template <class T> CVector_t<T> CVector_t<T>::operator = (CVector_t v_1)
@@ -83,51 +126,76 @@ template <class T> CVector_t<T> CVector_t<T>::operator = (CVector_t v_1)
 
 template <class T> CVector_t<T> CVector_t<T>::operator +(CVector_t<T> &v_1)
 {
-    assert(size == v_1.size);
-
-    CVector_t<T> v_r (size);
-
-    int i;
-    for (i = 0; i < size; i++)
+    try
     {
-        v_r.data[i] = data[i] + v_1.data[i];
-    }
+        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator +. \n");
 
-    return v_r;
+        CVector_t<T> v_r (size);
+
+        int i;
+        for (i = 0; i < size; i++)
+        {
+            v_r.data[i] = data[i] + v_1.data[i];
+        }
+
+        return v_r;
+    }
+    catch (MyException &ex)
+    {
+        throw ex;
+    }
 }
 
 template <class T> CVector_t<T> CVector_t<T>::operator -(CVector_t<T> & v_1)
 {
-    assert(size == v_1.size);
-
-    CVector_t<T> v_r(size);
-    int i;
-    for (i = 0; i < size; i++)
+    try
     {
-        v_r.data[i] = data[i] - v_1.data[i];
+        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator -.\n");
+        CVector_t<T> v_r(size);
+        int i;
+        for (i = 0; i < size; i++)
+        {
+            v_r.data[i] = data[i] - v_1.data[i];
+        }
+        return v_r;
     }
-    return v_r;
+    catch (MyException & ex)
+    {
+        throw ex;
+    }
 }
-
-
 
 template <class T> void CVector_t<T>::operator += (CVector_t<T> &v_1)
 {
-    assert(size == v_1.size);
-    int i;
-    for (i = 0; i < size; i++)
+    try
     {
-        data[i] += v_1.data[i];
+        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator +=. \n");
+        int i;
+        for (i = 0; i < size; i++)
+        {
+            data[i] += v_1.data[i];
+        }
+    }
+    catch (MyException & ex)
+    {
+        throw ex;
     }
 }
 
 template <class T> void CVector_t<T>::operator -= (CVector_t<T> &v_1)
 {
-    assert(size == v_1.size);
-    int i;
-    for (i = 0; i < size; i++)
+    try
     {
-        data[i] -= v_1.data[i];
+        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator -=. \n");
+        int i;
+        for (i = 0; i < size; i++)
+        {
+            data[i] -= v_1.data[i];
+        }
+    }
+    catch (MyException & ex)
+    {
+        throw ex;
     }
 }
 
@@ -145,77 +213,114 @@ template <class T> CVector_t<T> CVector_t<T>::operator * (int a)
 
 template <class T> CVector_t<T> CVector_t<T>::operator / (int a)
 {
-    int i;
-    CVector_t<T> v_r(size);
-    for(i = 0; i < size; i++)
+    try
     {
-        v_r.data[i] = data[i] / a;
+        if (a == 0) throw MyException("You try to divide by zero.");
+        int i;
+        CVector_t<T> v_r(size);
+        for(i = 0; i < size; i++)
+        {
+            v_r.data[i] = data[i] / a;
+        }
+        return v_r;
     }
-    return v_r;
+    catch (MyException &ex)
+    {
+        throw ex;
+    }
 }
 
 template <class T> T CVector_t<T>::operator | (CVector_t<T> & v_1)
 {
-    assert(size == v_1.size);
-    int i;
-    T G = 0;
-    for(i = 0; i < size; i++)
+    try
     {
-        G += data[i] * v_1.data[i];
+        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator |. \n");
+        int i;
+        T G = 0;
+        for(i = 0; i < size; i++)
+        {
+            G += data[i] * v_1.data[i];
+        }
+        return G;
     }
-    return G;
+    catch(MyException &ex)
+    {
+        throw ex;
+    }
 }
 
 template <class T> double CVector_t<T>::operator ^ (CVector_t<T> & v_1)
 {
-    assert(size == v_1.size);
-    double COS = 0;
-    double a , b;
-    int i;
-    for(i = 0; i < size; i++)
+    try
     {
-        COS += data[i] * v_1.data[i];
-        a += data[i] * data[i];
-        b += v_1.data[i] * v_1.data[i];
-    }
-    a = sqrt(a);
-    b = sqrt(b);
+        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator ^. \n");
+        double COS = 0;
+        double a , b;
+        int i;
+        for(i = 0; i < size; i++)
+        {
+            COS += data[i] * v_1.data[i];
+            a += data[i] * data[i];
+            b += v_1.data[i] * v_1.data[i];
+        }
+        a = sqrt(a);
+        b = sqrt(b);
 
-    COS /= a * b;
-    assert(COS <= 1);
-    return COS;
+        COS /= a * b;
+        if (!COS <= 1) throw MyException ((char*) "Invalid cosine in operator ^. \n");
+        return COS;
+    }
+    catch (MyException & ex)
+    {
+        throw ex;
+    }
 }
 
 template <class T> int CVector_t<T>::operator > (CVector_t<T> & v_1)
 {
-    assert(size == v_1.size);
-    long double a = 0 , b = 0;
-
-    int i;
-
-    for(i = 0; i < size; i++)
+    try
     {
-        a += data[i] * data[i];
-        b += v_1.data[i] * v_1.data[i];
-    }
+        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator >. \n");
+        long double a = 0 , b = 0;
 
-    return (a > b) ? 1 : 0;
+        int i;
+
+        for(i = 0; i < size; i++)
+        {
+            a += data[i] * data[i];
+            b += v_1.data[i] * v_1.data[i];
+        }
+
+        return (a > b) ? 1 : 0;
+    }
+    catch (MyException & ex)
+    {
+        throw ex;
+    }
 }
 
 template <class T> int CVector_t<T>::operator < (CVector_t<T> & v_1)
 {
-    assert(size == v_1.size);
-    long double a = 0 , b = 0;
-
-    int i;
-
-    for(i = 0; i < size; i++)
+    try
     {
-        a += data[i] * data[i];
-        b += v_1.data[i] * v_1.data[i];
-    }
+        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator <. \n");
 
-    return (a < b) ? 1 : 0;
+        long double a = 0 , b = 0;
+
+        int i;
+
+        for(i = 0; i < size; i++)
+        {
+            a += data[i] * data[i];
+            b += v_1.data[i] * v_1.data[i];
+        }
+
+        return (a < b) ? 1 : 0;
+    }
+    catch (MyException & ex)
+    {
+        throw ex;
+    }
 }
 
 template <class T> CVector_t<T> CVector_t<T>::operator -- ()
@@ -238,7 +343,7 @@ template <class T> CVector_t<T> CVector_t<T>::operator ++ ()
     return *this;
 }
 
-template <class T> CVector_t<T> CVector_t<T>::operator ++ (int notused) //prefix form
+template <class T> CVector_t<T> CVector_t<T>::operator ++ (int notused)
 {
     CVector_t temp = *this;
     int i;
@@ -249,7 +354,7 @@ template <class T> CVector_t<T> CVector_t<T>::operator ++ (int notused) //prefix
     return temp;
 }
 
-template <class T> CVector_t<T> CVector_t<T>::operator -- (int notused) //prefix form
+template <class T> CVector_t<T> CVector_t<T>::operator -- (int notused)
 {
     CVector_t temp = *this;
     int i;
