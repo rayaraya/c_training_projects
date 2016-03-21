@@ -1,5 +1,7 @@
+
 #include "CVector_t.h"
 #include <iostream>
+#line 4
 
 int main()
 {
@@ -36,7 +38,8 @@ int main()
     }
     catch (MyException &ex)
     {
-        std::cout<< "There was an error: " << ex.show();
+        std::cout<< "There was an error: \n";
+        ex.show_all();
     }
 
 

@@ -8,20 +8,31 @@
 
 class MyException
 {
+protected:
+	std::string what_;
+	std::string where_;
+	int sf_;
 public:
-    char str_what[50];
-
-    MyException()
+    MyException(const std::string& where, const std::string& what):
+        what_(what),
+        where_(where),
+        sf_(0)
+    {}
+    MyException (const std::string what):
+        what_(what),
+        sf_(0)
+    {}
+    MyException(const std::string& where, const std::string& what, int sf):
+        what_(what),
+        where_(where),
+        sf_(sf)
+    {}
+    void show_all()
     {
-        *str_what = 0;
-    }
-    MyException (char *s)
-    {
-        strcpy(str_what, s);
-    }
-    std::string show()
-    {
-        return str_what;
+        std::string msg = what_ + " " + "Look here a specification: " + where_;
+        std::cout << msg;
+        if(sf_!= 0)
+            std::cout << sf_ << ".\n";
     }
 };
 
@@ -76,7 +87,7 @@ template <class T> CVector_t<T>::CVector_t(int b_size)
     }
     catch (...)
     {
-        throw MyException((char*)"Memory isn't allocated in ctor.\n");
+        throw MyException("In constructor CVector_t: line ","Memory isn't allocated in ctor.", __LINE__);
     }
 }
 
@@ -89,7 +100,7 @@ template <class T> CVector_t<T>::CVector_t(const CVector_t<T>&thus)
     }
     catch(...)
     {
-        throw MyException((char*)"Memory isn't allocated in copy ctor.\n");
+        throw MyException("In copy constructor CVector_t: line ","Memory isn't allocated in copy ctor.", __LINE__);
     }
 
     int i;
@@ -107,7 +118,7 @@ template <class T> T& CVector_t<T>::operator[] (int index)
     try
     {
         if (!(index >= 0 && index < size))
-            throw MyException((char*)"Invalid index in operator [ ].\n");
+            throw MyException("Operator [] of class CVector_t: line ","Invalid index.", __LINE__);
         return data[index];
     }
     catch(MyException &ex)
@@ -128,7 +139,7 @@ template <class T> CVector_t<T> CVector_t<T>::operator +(CVector_t<T> &v_1)
 {
     try
     {
-        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator +. \n");
+        if (!(size == v_1.size)) throw MyException("In operator +: line ","Dimension of vectors is different.\n", __LINE__);
 
         CVector_t<T> v_r (size);
 
@@ -150,7 +161,7 @@ template <class T> CVector_t<T> CVector_t<T>::operator -(CVector_t<T> & v_1)
 {
     try
     {
-        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator -.\n");
+        if (!(size == v_1.size)) throw MyException("In operator -: line ","Dimension of vectors is different.\n", __LINE__);
         CVector_t<T> v_r(size);
         int i;
         for (i = 0; i < size; i++)
@@ -169,7 +180,7 @@ template <class T> void CVector_t<T>::operator += (CVector_t<T> &v_1)
 {
     try
     {
-        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator +=. \n");
+        if (!(size == v_1.size)) throw MyException("In operator +=: line ","Dimension of vectors is different.\n", __LINE__);
         int i;
         for (i = 0; i < size; i++)
         {
@@ -186,7 +197,7 @@ template <class T> void CVector_t<T>::operator -= (CVector_t<T> &v_1)
 {
     try
     {
-        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator -=. \n");
+        if (!(size == v_1.size)) throw MyException("In operator -=: line ","Dimension of vectors is different.\n", __LINE__);
         int i;
         for (i = 0; i < size; i++)
         {
@@ -215,7 +226,7 @@ template <class T> CVector_t<T> CVector_t<T>::operator / (int a)
 {
     try
     {
-        if (a == 0) throw MyException("You try to divide by zero.");
+        if (a == 0) throw MyException("In operator /: line ", "You try to divide by zero.", __LINE__);
         int i;
         CVector_t<T> v_r(size);
         for(i = 0; i < size; i++)
@@ -234,7 +245,7 @@ template <class T> T CVector_t<T>::operator | (CVector_t<T> & v_1)
 {
     try
     {
-        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator |. \n");
+        if (!(size == v_1.size)) throw MyException("In operator | : line ","Dimension of vectors is different.\n", __LINE__);
         int i;
         T G = 0;
         for(i = 0; i < size; i++)
@@ -253,7 +264,7 @@ template <class T> double CVector_t<T>::operator ^ (CVector_t<T> & v_1)
 {
     try
     {
-        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator ^. \n");
+        if (!(size == v_1.size)) throw MyException("In operator ^: line ","Dimension of vectors is different.\n", __LINE__);
         double COS = 0;
         double a , b;
         int i;
@@ -267,7 +278,7 @@ template <class T> double CVector_t<T>::operator ^ (CVector_t<T> & v_1)
         b = sqrt(b);
 
         COS /= a * b;
-        if (!COS <= 1) throw MyException ((char*) "Invalid cosine in operator ^. \n");
+        if (!COS <= 1) throw MyException ("Invalid cosine in operator ^. \n");
         return COS;
     }
     catch (MyException & ex)
@@ -280,7 +291,7 @@ template <class T> int CVector_t<T>::operator > (CVector_t<T> & v_1)
 {
     try
     {
-        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator >. \n");
+        if (!(size == v_1.size)) throw MyException("In operator >: line ","Dimension of vectors is different.\n", __LINE__);
         long double a = 0 , b = 0;
 
         int i;
@@ -303,7 +314,7 @@ template <class T> int CVector_t<T>::operator < (CVector_t<T> & v_1)
 {
     try
     {
-        if (!(size == v_1.size)) throw MyException((char*)"Dimension of vectors is different in operator <. \n");
+        if (!(size == v_1.size)) throw MyException("In operator <: line ","Dimension of vectors is different.\n", __LINE__);
 
         long double a = 0 , b = 0;
 
