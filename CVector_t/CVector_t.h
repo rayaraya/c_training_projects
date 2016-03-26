@@ -36,7 +36,7 @@ public:
     }
 };
 
-template <class T> class CVector_t
+template <class T = int> class CVector_t
 {
 private:
     int size;
@@ -75,6 +75,120 @@ public:
 
     template <class X> friend std::ostream & operator <<(std::ostream & stream, CVector_t<X> & v);
     template <class X> friend std::istream & operator >>(std::istream & stream, CVector_t<X> & v);
+    //запилить пафосные скобочки как у векторов которые мы просто пишем
+};
+
+template <> class CVector_t<bool>
+{
+private:
+    int size;
+    unsigned char* data;
+
+    void setbit(const int num, bool value)
+    {
+        try
+        {
+            if (!(num >= 0 && num / 8 + 1 < size))
+                throw MyException("Function setbit of class CVector_t<bool>: line ","Invalid index.", __LINE__);
+            if (value < 0 || value > 1)
+                throw MyException("Function setbit of class CVector_t<bool>: line ","Invalid value.", __LINE__);
+            data[num / 8] = data[num / 8] ^ (value << (num % 8));
+        }
+        catch(MyException & ex)
+        {
+            throw ex;
+        }
+    }
+    bool getbit(const int num) const
+    {
+        try
+        {
+            if (!(num >= 0 && num / 8 + 1 < size))
+                throw MyException("Function getbit of class CVector_t<bool>: line ","Invalid index.", __LINE__);
+            return (data[num / 8] & (1 << num % 8));
+        }
+        catch(MyException & ex)
+        {
+            throw ex;
+        }
+    }
+public:
+    CVector_t(int b_size)
+    {
+        size = b_size;
+        int N = size / 8 + !!(size % 8);
+        try
+        {
+            data = new unsigned char[N];
+        }
+        catch(...)
+        {
+            throw MyException("In constructor CVector_t<bool>: line ","Memory isn't allocated in ctor.", __LINE__);
+        }
+        int i;
+        for(i = 0; i < N; i++)
+        {
+            data[i] = 0;
+        }
+    }
+    CVector_t (const CVector_t<bool>&thus)
+    {
+        size = thus.size;
+        try
+        {
+            data = new unsigned char[size / 8 + !!(size % 8)];
+        }
+        catch(...)
+        {
+            throw MyException("In constructor CVector_t<bool>: line ","Memory isn't allocated in copy ctor.", __LINE__);
+        }
+
+        int i;
+        for(i = 0; i < (size / 8 + !!(size % 8)); i++)
+        {
+            data[i] = thus.data[i];
+        }
+    }
+
+    ~CVector_t()
+    {
+        delete[] data;
+    }
+
+    class CBit
+    {
+    private:
+        CVector_t &base_;
+        const int num_;
+
+        CBit(CVector_t & base, const int num):
+            base_(base),
+            num_(num)
+            {}
+        CBit(const CBit&);
+        CBit& operator = (const CBit&);
+        friend class CVector_t;
+
+    public:
+        CBit& operator = (bool value)
+        {
+            base_.setbit(num_, value);
+            return *this;
+        }
+        operator int() const
+        {
+            return base_.getbit(num_);
+        }
+    };
+
+    CBit operator [](const int& num)
+    {
+        return CBit(*this, num);
+    }
+    bool operator[](const int& num) const
+    {
+        return getbit(num);
+    }
 };
 
 template <class T> CVector_t<T>::CVector_t(int b_size)

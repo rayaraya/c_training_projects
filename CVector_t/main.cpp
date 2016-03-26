@@ -1,17 +1,20 @@
-
 #include "CVector_t.h"
 #include <iostream>
-#line 4
 
 int main()
 {
     CVector_t<int> a(2), b(2), c(2);
-    int f;
+    CVector_t<bool> B(4);
+
+
+    bool g = 1;
 
     try
     {
-        f = a[5];
-
+        B[1] = g;
+        //f = a[1];
+        int h = B[1];
+        std::cout << h << std::endl;
         a[0] = 1;
         a[1] = 2;
 
