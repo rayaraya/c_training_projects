@@ -4,7 +4,8 @@
 #include <iostream>
 #include <cmath>
 #include <cstring>
-
+//дробь, нео и архитектор, ассмеблер
+//интерполятор
 class MyException
 {
 protected:
@@ -74,7 +75,6 @@ public:
 
     template <class X> friend std::ostream & operator <<(std::ostream & stream, CVector_t<X> & v);
     template <class X> friend std::istream & operator >>(std::istream & stream, CVector_t<X> & v);
-    //запилить пафосные скобочки как у векторов которые мы просто пишем
 };
 
 template <> class CVector_t<bool>
@@ -157,6 +157,7 @@ public:
     {
         return size;
     }
+
     class CBit
     {
     private:
@@ -211,10 +212,6 @@ public:
             }
         }
     public:
-        CBitIterator(CVector_t &base):
-            base_(base),
-            index(-1)
-        {}
         CBitIterator& operator = (const CBitIterator& thus)
         {
             try
