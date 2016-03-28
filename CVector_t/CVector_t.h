@@ -4,14 +4,13 @@
 #include <iostream>
 #include <cmath>
 #include <cstring>
-#include <cstdlib>
 
 class MyException
 {
 protected:
-	std::string what_;
-	std::string where_;
-	int sf_;
+    std::string what_;
+    std::string where_;
+    int sf_;
 public:
     MyException(const std::string& where, const std::string& what):
         what_(what),
@@ -154,22 +153,23 @@ public:
     {
         delete[] data;
     }
-
+    int getsize()
+    {
+        return size;
+    }
     class CBit
     {
     private:
         CVector_t &base_;
+        CBit& operator = (const CBit&);
+        friend class CBitIterator;
         const int num_;
-
+    public:
         CBit(CVector_t & base, const int num):
             base_(base),
             num_(num)
-            {}
+        {}
         CBit(const CBit&);
-        CBit& operator = (const CBit&);
-        friend class CVector_t;
-
-    public:
         CBit& operator = (bool value)
         {
             base_.setbit(num_, value);
@@ -188,6 +188,101 @@ public:
     bool operator[](const int& num) const
     {
         return getbit(num);
+    }
+
+    class CBitIterator
+    {
+    private:
+        friend class CVector_t<bool>;
+        CVector_t &base_;
+        int index;
+        CBitIterator(CVector_t &base, int ind):
+            base_(base),
+            index(ind)
+        {
+            try
+            {
+                if (ind < 0 || ind > base_.getsize() - 1)
+                    throw MyException("In constructor CVector_t<bool>::CBitIterator line ","Invalid index", __LINE__);
+            }
+            catch(MyException & ex)
+            {
+                throw ex;
+            }
+        }
+    public:
+        CBitIterator(CVector_t &base):
+            base_(base),
+            index(-1)
+        {}
+        CBitIterator& operator = (const CBitIterator& thus)
+        {
+            try
+            {
+                if (this != &thus)
+                {
+                    if(thus.index != index)
+                        throw MyException("In operator = in class CBitIterator line ","Invalid index. ", __LINE__);
+                    base_ = thus.base_;
+                    index = thus.index;
+                }
+            }
+            catch(MyException &ex)
+            {
+                throw ex;
+            }
+            return *this;
+        }
+        CBitIterator& operator ++()
+        {
+            try
+            {
+                if(index == base_.getsize() - 1)
+                    throw MyException("In operator ++ in class CBitIterator line", "You try ++index but your index have a max value.", __LINE__);
+                index++;
+            }
+            catch(MyException &ex)
+            {
+                throw ex;
+            }
+            return *this;
+        }
+        CBitIterator operator ++ (int notused)
+        {
+            try
+            {
+                if(index == base_.getsize() - 1)
+                    throw MyException("In operator ++ in class CBitIterator line", "You try ++index but your index have a max value.", __LINE__);
+                index++;
+                CBitIterator temp(base_, index);
+                return temp;
+            }
+            catch(MyException &ex)
+            {
+                throw ex;
+            }
+        }
+        CBit operator *()
+        {
+            CBit a(base_, index);
+            return a; //current
+        }
+        bool operator == (const CBitIterator& thus)
+        {
+            return ((this == &thus) && (index == thus.index));
+        }
+        bool operator != (const CBitIterator& thus)
+        {
+            return !(index == thus.index);
+        }
+    };
+    CBitIterator begin()
+    {
+        return CBitIterator(*this, 0);
+    }
+    CBitIterator end()
+    {
+        return CBitIterator(*this, (*this).getsize() - 1);
     }
 };
 
@@ -493,9 +588,14 @@ template <class T> CVector_t<T> CVector_t<T>::operator -- (int notused)
 template <class X> std::ostream & operator<<(std::ostream & stream, CVector_t<X> & v)
 {
     int i;
+    stream << "(";
     for (i = 0; i < v.size; i++)
-        stream << v.data[i] << " ";
-    stream << std::endl;
+    {
+        stream << v.data[i];
+        if (i < v.size - 1)
+            stream << ",";
+    }
+    stream << ")" << std::endl;
     return stream;
 }
 

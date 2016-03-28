@@ -4,17 +4,22 @@
 int main()
 {
     CVector_t<int> a(2), b(2), c(2);
-    CVector_t<bool> B(4);
+    CVector_t<bool> B(6);
 
 
     bool g = 1;
 
     try
     {
-        B[1] = g;
+        int j = 0;
+        for(CVector_t<bool>::CBitIterator it = B.begin(),end = B.end(); it != end; ++it)
+        {
+            *it = j % 2;
+            std::cout<<"  "<< *it << " " << std::endl;
+            j++;
+        }
+
         //f = a[1];
-        int h = B[1];
-        std::cout << h << std::endl;
         a[0] = 1;
         a[1] = 2;
 
