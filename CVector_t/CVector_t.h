@@ -157,11 +157,19 @@ public:
     {
         return size;
     }
+    bool operator == (const CVector_t & thus)
+    {
+        return (this == &thus);
+    }
+    bool operator != (const CVector_t & thus)
+    {
+        return !(*this == thus);
+    }
 
     class CBit
     {
     private:
-        CVector_t &base_;
+        CVector_t<bool> &base_;
         CBit& operator = (const CBit&);
         friend class CBitIterator;
         const int num_;
@@ -195,7 +203,7 @@ public:
     {
     private:
         friend class CVector_t<bool>;
-        CVector_t &base_;
+        CVector_t<bool> &base_;
         int index;
         CBitIterator(CVector_t &base, int ind):
             base_(base),
@@ -218,8 +226,8 @@ public:
             {
                 if (this != &thus)
                 {
-                    if(thus.index != index)
-                        throw MyException("In operator = in class CBitIterator line ","Invalid index. ", __LINE__);
+                    if(thus.base_ != base_)
+                        throw MyException("In operator = in class CBitIterator line ","Different base. ", __LINE__);
                     base_ = thus.base_;
                     index = thus.index;
                 }
@@ -266,13 +274,14 @@ public:
         }
         bool operator == (const CBitIterator& thus)
         {
-            return ((this == &thus) && (index == thus.index));
+            return ((this == &thus) || ((index == thus.index) && (base_ == thus.base_)));
         }
         bool operator != (const CBitIterator& thus)
         {
-            return !(index == thus.index);
+            return !(*this == thus);
         }
     };
+
     CBitIterator begin()
     {
         return CBitIterator(*this, 0);
