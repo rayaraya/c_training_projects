@@ -1,5 +1,12 @@
 #include "diff_prog.h"
 
+/*
+tree have the following func:
+-: +, -, /, *
+-: ^ that operation with div and mul priority
+-: sin, cos, ctg, tg, ln
+e and pi = p : will be processed separately from the expression tree
+*/
 int main()
 {
     std::string re;
