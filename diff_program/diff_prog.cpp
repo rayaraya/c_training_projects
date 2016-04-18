@@ -1,188 +1,111 @@
 #include "diff_prog.h"
 
-Node::Node(type type_n, char type_op, Node* left, Node* right):
-    type_node(type_n),
-    left_(left),
-    right_(right)
+Node* copy(Node* v)
 {
-    data_str[0] = type_op;
-}
-
-Node::Node(type type_n, char type_var):
-    type_node(type_n),
-    left_(NULL),
-    right_(NULL)
-{
-    data_str[0] = type_var;
-}
-
-Node::Node(type type_n, double val):
-    type_node(type_n),
-    left_(NULL),
-    right_(NULL)
-{
-    val_ = val;
-}
-
-Node::Node(type type_n, char* data,Node* right):
-    type_node(type_n),
-    left_(NULL),
-    right_(right)
-{
-    strcpy(data_str ,data);
-}
-
-Node::~Node()
-{}
-
-double Node::get_num()
-{
-    return val_;
-}
-
-char Node::get_opr()
-{
-    return data_str[0];
-}
-
-char Node::get_var()
-{
-    return data_str[0];
-}
-
-int Node::get_type()
-{
-    return type_node;
-}
-
-Tree::Tree(Node* root)
-{
-    root_ = root;
-}
-
-Node* Tree::get_root()
-{
-    return root_;
-}
-
-Tree::~Tree()
-{
-    //bypassing and clearing memory?
-}
-
-std::string read_string() //reads a line passing of generalized spaces
-{
-    char c;
-    std::string str;
-    do
+    $
+    if (v == NULL)
+        return NULL;
+    switch((*v).get_type())
     {
-        if (!std::cin.get(c))
-            break;
-        if (!isspace(c))
-            str += c;
+    case OP_1:
+        return new Node(OP_1, (*v).get_type_op(), copy((*v).left_), copy((*v).right_));
+    case OP_2:
+        return new Node(OP_2, (*v).get_type_op(), copy((*v).left_), copy((*v).right_));
+    case NUMBER:
+        return new Node(NUMBER, (*v).get_num());
+    case VARIABLE:
+        return new Node(VARIABLE, (*v).get_var());
+    case FUNC:
+        return new Node(FUNC, (*v).get_func(), copy((*v).right_));
     }
-    while (c != '\n');
-    return str;
+    return NULL;
 }
 
-
-Node* parse_in_tree(std::string str)
+Node* d(Node* n)
 {
-    int count_ex;
-    unsigned int t, i;
-    std::cout << str << std::endl;
-    //use it for print full process of parsing
-    for(t = OP_1; t < NUMBER; t++)
+    $
+    if(n == NULL)
+        return NULL;
+    //std::cout << "type = "  << (*n).get_type() << std::endl;
+    switch((*n).get_type())
     {
-        for(i = 0, count_ex = 0; i < str.size(); i++)
+    case OP_1:
+        if((*n).get_type_op() == '+')
+            return *d((*n).left_) + d((*n).right_);
+        if((*n).get_type_op() == '-')
+            return *d((*n).left_) - d((*n).right_);
+    case OP_2:
+        if((*n).get_type_op() == '*')
+            return *(*d((*n).left_) * copy((*n).right_)) + (*d((*n).right_) * copy((*n).left_));
+        if((*n).get_type_op() == '/')
+            return *(*(*d((*n).left_) * copy((*n).right_)) - (*d((*n).right_) * copy((*n).left_))) /
+            (*copy((*n).right_) * copy((*n).right_));
+        if((*n).get_type_op() == '^')
         {
-            if(str[i] == LP)
-                count_ex++;
-            else if(str[i] == RP)
-                count_ex--;
-            else if (t == OP_1 && !count_ex)
+            if ((*((*n).right_)).get_type() == NUMBER)
             {
-                if (str[i] == '+')
-                    {
-                        Node* r = new Node(OP_1,'+', parse_in_tree(str.substr(0, i)), parse_in_tree(str.substr(i + 1, str.size() - i)));
-                        return r;
-                    }
-                if (str[i] == '-')
-                    {
-                        Node* r = new Node(OP_1,'+', parse_in_tree(str.substr(0, i)), parse_in_tree(str.substr(i + 1, str.size() - i)));
-                        return r;
-                    }
+                return (*copy((*n).right_))*
+                (*d((*n).left_) * (*copy((*n).left_) * (new Node(NUMBER, (double)((*((*n).right_)).get_num() - 1)))));
             }
-            else if (!count_ex)
+            else
             {
-                if (str[i] == '*')
-                    {
-                       Node* r = new Node(OP_2, '*', parse_in_tree(str.substr(0, i)), parse_in_tree(str.substr(i + 1, str.size() - i)));
-                       return r;
-                    }
-                if (str[i] == '/')
-                {
-                    Node* r = new Node(OP_2, '/', parse_in_tree(str.substr(0, i)), parse_in_tree(str.substr(i + 1, str.size() - i)));
-                    return r;
-                }
-                 if (str[i] == '^')
-                {
-                    Node* r = new Node(OP_2, '^', parse_in_tree(str.substr(0, i)), parse_in_tree(str.substr(i + 1, str.size() - i)));
-                    return r;
-                }
+                char dat[3] = "ln";
+                return (*copy (n)) * d(*new Node(FUNC, dat, copy ((*n).left_)) * copy((*n).right_));
             }
         }
-    }
-
-    if(str[0] == '(' && str[str.size() - 1] == ')')
-    {
-        return parse_in_tree(str.substr(1, str.size() - 2));
-    }
-
-    if (str[0] >= '0' && str[0] <= '9')
-    {
-        std::stringstream n_str(std::stringstream::in | std::stringstream::out);
-        n_str << str;
-        double data;
-        n_str >> data;
-        //std::cout << data << std::endl;
-        Node *r = new Node(NUMBER, data);
-        return r;
-    }
-
-    if (((str[0] >= 'a' && str[0] <= 'z') ||
-         (str[0] >= 'A' && str[0] <= 'Z'))&&
-        ((str.size() == 1) ||
-        (str[1] >= '0' && str[1] <= '9')))
-    {
-        std::stringstream n_str(std::stringstream::in | std::stringstream::out);
-        n_str << str;
-        char data;
-        n_str >> data;
-        //std::cout << data << std::endl;
-        Node *r = new Node(VARIABLE, data);
-        return r;
-    }
-    else
-    {
-        char f_cmp[3];
-        std::string s = str.substr(0, 3);
-        strcpy(f_cmp, s.c_str());
-
-        if (!strcmp(f_cmp, "cos") || !strcmp(f_cmp, "sin") || !strcmp(f_cmp, "ctg"))
+    case NUMBER:
+        return new Node(NUMBER, (double)0);
+    case VARIABLE:
+        return new Node(NUMBER, (double)1);
+    case FUNC:
+        if (!strcmp((*n).get_func(), "ln"))
         {
-            //std::cout << f_cmp << std::endl;
-            Node *r = new Node(FUNC, f_cmp, parse_in_tree(str.substr(3, str.size() - 3)));
-            return r;
+            return *d((*n).right_) * (*new Node(NUMBER, (double) 1) / copy((*n).right_));
         }
-        if (!strcmp(f_cmp, "ln(") || !strcmp(f_cmp, "tg("))
+        if (!strcmp((*n).get_func(), "tg"))
         {
-            char data[2];
-            data[0] = f_cmp[0];
-            data[1] = f_cmp[1];
-            //std::cout << data << std::endl;
-            Node *r = new Node(FUNC, data, parse_in_tree(str.substr(2, str.size() - 2)));
-            return r;
+            char dat[4] = "cos";
+            return *d((*n).right_) * (*new Node(NUMBER, (double) 1) /
+            new Node(OP_2, '^', new Node(FUNC, dat, copy((*n).right_)), new Node(NUMBER, (double)2)));
         }
+        if (!strcmp((*n).get_func(), "ctg"))
+        {
+            char dat[4] = "sin";
+            return *new Node(NUMBER, (double) -1) * (*d((*n).right_) * (*new Node(NUMBER, (double) 1) /
+            new Node(OP_2, '^', new Node(FUNC, dat, copy((*n).right_)), new Node(NUMBER, (double)2))));
+        }
+        if (!strcmp((*n).get_func(), "sin"))
+        {
+            char dat[4] = "cos";
+            return *d((*n).right_) * new Node(FUNC, dat, copy((*n).right_));
+        }
+        if (!strcmp((*n).get_func(), "cos"))
+        {
+            char dat[4] = "sin";
+            return *new Node(NUMBER, (double) -1) * (*d((*n).right_) * new Node(FUNC, dat, copy((*n).right_)));
+        }
+
     }
+    return NULL;
 }
+
+Node* Node::operator + (Node* v)
+{
+    return new Node(OP_1, '+', this, v);
+}
+
+Node* Node::operator - (Node* v)
+{
+    return new Node(OP_1, '-', this, v);
+}
+
+Node* Node::operator * (Node* v)
+{
+    return new Node(OP_2, '*', this, v);
+}
+
+Node* Node::operator / (Node* v)
+{
+    return new Node(OP_2, '/', this, v);
+}
+

@@ -11,7 +11,13 @@ int main()
 {
     std::string re;
     re = read_string();
+    std::cout<< "Process of parse: " << std::endl;
     Tree v(parse_in_tree(re));
+    std::cout << "Expression: ";
+    dump_tree(v.get_root());
+    Tree diff(d(v.get_root()));
+    std::cout << std::endl << "Diff expression: ";
+    dump_tree(diff.get_root());
     return 0;
 }
 
