@@ -117,5 +117,7 @@ Node* parse_in_tree(std::string str)
             return r;
         }
     }
+    std::cout << "You enter wrong data!\n"; //there will be another error handling
+    exit(0);
     return NULL;
 }

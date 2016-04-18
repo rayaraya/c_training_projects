@@ -99,7 +99,7 @@ void dump_tree(Node *n)
     $
     if (n == NULL)
         return;
-    if ((*n).get_type() == OP_2)
+    if ((*n).get_type() == OP_2 )
         std::cout << "(";
     dump_tree(n -> left_);
     if ((*n).get_type() == OP_2)
@@ -122,11 +122,57 @@ void dump_tree(Node *n)
         break;
     case FUNC:
         std::cout << (*n).get_func();
+        std::cout << "(";
         break;
     }
     dump_tree(n -> right_);
-    if ((*n).get_type() == OP_2)
+    if ((*n).get_type() == OP_2 || (*n).get_type() == FUNC)
         std::cout << ")";
+}
+
+std::string dump_tree_in_file(Node *n)
+{
+    $
+    std::string ff;
+    if (n == NULL)
+    {
+        //ff = ff + "\n";
+        return ff;
+    }
+    if ((*n).get_type() == OP_2 )
+        ff += "(";
+    ff += dump_tree_in_file(n -> left_);
+    if ((*n).get_type() == OP_2)
+        ff += ")";
+    //std::cout <<"type node:"<<  (*n).get_type() << std::endl;
+    switch((*n).get_type())
+    {
+    case NUMBER:
+        {
+            std::ostringstream sstream;
+            sstream << (*n).get_num();
+            ff += sstream.str();
+            break;
+        }
+    case VARIABLE:
+        ff += (*n).get_var();
+        break;
+    case OP_1:
+        ff += (*n).get_opr();
+        break;
+    case OP_2:
+        ff += (*n).get_opr();
+        ff += "(";
+        break;
+    case FUNC:
+        ff += (*n).get_func();
+        ff += "(";
+        break;
+    }
+    ff += dump_tree_in_file(n -> right_);
+    if ((*n).get_type() == OP_2 || (*n).get_type() == FUNC)
+        ff +=")";
+    return ff;
 }
 
 Tree::~Tree()

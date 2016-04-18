@@ -18,6 +18,7 @@ int main()
     Tree diff(d(v.get_root()));
     std::cout << std::endl << "Diff expression: ";
     dump_tree(diff.get_root());
+    tex_doc(v.get_root());
     return 0;
 }
 

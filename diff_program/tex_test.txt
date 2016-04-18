@@ -1,0 +1,34 @@
+\documentclass[12pt]{article}
+\usepackage[cp1251]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, russian]{babel}
+\usepackage{amssymb, amsthm, amsmath}
+\usepackage{graphicx}
+\textheight=235mm \textwidth=155mm \hoffset=-5mm \voffset=-7mm
+
+\renewcommand{\ge}{\geqslant}
+\renewcommand{\le}{\leqslant}
+\def\eps{\varepsilon}
+
+\def\RR{\mathbb R}
+\def\QQ{\mathbb Q}
+\def\ZZ{\mathbb Z}
+\def\NN{\mathbb N}
+
+
+\begin{document}
+
+\begin{center}
+
+\begin{Large}
+
+Differentiating program.
+
+\end{Large}
+
+\end{center}
+
+
+Expression: $45-5$
+
+\end{document}nt}t}

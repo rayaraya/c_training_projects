@@ -84,7 +84,6 @@ Node* d(Node* n)
             char dat[4] = "sin";
             return *new Node(NUMBER, (double) -1) * (*d((*n).right_) * new Node(FUNC, dat, copy((*n).right_)));
         }
-
     }
     return NULL;
 }

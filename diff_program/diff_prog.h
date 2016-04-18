@@ -1,11 +1,15 @@
 #ifndef DIFF_PROG_H
 #define DIFF_PROG_H
 
+#include <fstream>
 #include <iostream>
 #include <cstring>
 #include <sstream>
-typedef int type;
+#include <cstring>
+#include <cstdlib>
 
+typedef int type;
+//обработать pi и e
 /*#define dL *((*n).left_)
 #define dR *((*n).right_)
 #define L ((*n).left_)
@@ -116,12 +120,13 @@ public:
 };
 
 Node* parse_in_tree(std::string str);
+std::string dump_tree_in_file(Node *n);
 
 std::string read_string();
 
 void dump_tree(Node *n);
 Node* d(Node* n);
 Node* copy(Node* v);
-
+void tex_doc(Node* root);
 
 #endif // DIFF_PROG_H
