@@ -96,7 +96,7 @@ public:
             return;
         type_node = 0;
         val_ = 0;
-        delete [] data_str;
+        //delete [] data_str;
         delete this;
     }
 };
