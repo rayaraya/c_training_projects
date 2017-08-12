@@ -1,1 +1,1 @@
-# test_project
+# c_training_projects
